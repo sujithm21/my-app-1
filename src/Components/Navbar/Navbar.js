@@ -2,28 +2,20 @@
 import React from 'react';
 import './Navbar.css';
 
-const Navbar = ({ isLoggedIn, onLogout }) => {
-  return (
-    <nav className="navbar">
-      <div className="navbar-logo">
-        <h2>My Courses App</h2>
-      </div>
-      <ul className="navbar-links">
-        {isLoggedIn ? (
-          <>
-            <li><a href="#courses">Courses</a></li>
-            <li><a href="#profile">Profile</a></li>
-            <button className="navbar-logout" onClick={onLogout}>Logout</button>
-          </>
-        ) : (
-          <>
-            <li><a href="#login">Login</a></li>
-            <li><a href="#signup">Signup</a></li>
-          </>
-        )}
-      </ul>
-    </nav>
-  );
-};
+const Navbar = ({ isLoggedIn, onLogout, onSelectView }) => (
+  <nav className="navbar">
+    <h2>My Courses App</h2>
+    {isLoggedIn ? (
+      <>
+        <button onClick={() => onSelectView("home")}>Home</button>
+        <button onClick={() => onSelectView("edit")}>Edit Courses</button>
+        <button onClick={() => onSelectView("create")}>Create Course</button>
+        <button onClick={onLogout}>Logout</button>
+      </>
+    ) : (
+      <p>Please log in to access courses.</p>
+    )}
+  </nav>
+);
 
 export default Navbar;

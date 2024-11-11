@@ -1,46 +1,73 @@
 // src/components/Course/CourseForm.js
-import React, { useState } from 'react';
-import './CourseStyles.css';
+import React, { useState, useEffect } from 'react';
 
-const CourseForm = ({ onSubmit, course }) => {
-  const [formData, setFormData] = useState({
-    title: course?.title || '',
-    description: course?.description || '',
-    semester: course?.semester || '',
-    instructor: course?.instructor || ''
-  });
+const CourseForm = ({ initialCourse, onSave, onCancel }) => {
+  const [title, setTitle] = useState(initialCourse?.title || '');
+  const [description, setDescription] = useState(initialCourse?.description || '');
+  const [semester, setSemester] = useState(initialCourse?.semester || '');
+  const [instructor, setInstructor] = useState(initialCourse?.instructor || '');
+  const [image, setImage] = useState(initialCourse?.image || '');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  useEffect(() => {
+    if (initialCourse) {
+      setTitle(initialCourse.title);
+      setDescription(initialCourse.description);
+      setSemester(initialCourse.semester);
+      setInstructor(initialCourse.instructor);
+      setImage(initialCourse.image);
+    }
+  }, [initialCourse]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
+  const handleSave = () => {
+    const newCourse = {
+      ...initialCourse,
+      title,
+      description,
+      semester,
+      instructor,
+      image,
+      enrolledList: initialCourse ? initialCourse.enrolledList : [],
+    };
+    onSave(newCourse);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="course-form">
-      <label>Title</label>
-      <input type="text" name="title" value={formData.title} onChange={handleChange} required />
+    <div className="course-form">
+      <h2>{initialCourse ? 'Edit Course' : 'Add Course'}</h2>
+      <input
+        type="text"
+        placeholder="Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Semester"
+        value={semester}
+        onChange={(e) => setSemester(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Instructor"
+        value={instructor}
+        onChange={(e) => setInstructor(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Image URL"
+        value={image}
+        onChange={(e) => setImage(e.target.value)}
+      />
 
-      <label>Description</label>
-      <textarea name="description" value={formData.description} onChange={handleChange} required />
-
-      <label>Semester</label>
-      <select name="semester" value={formData.semester} onChange={handleChange} required>
-        <option value="Spring">Spring</option>
-        <option value="Summer">Summer</option>
-        <option value="Fall">Fall</option>
-        <option value="Winter">Winter</option>
-      </select>
-
-      <label>Instructor</label>
-      <input type="text" name="instructor" value={formData.instructor} onChange={handleChange} required />
-
-      <button type="submit">Save Course</button>
-    </form>
+      <button onClick={handleSave}>{initialCourse ? 'Update Course' : 'Create Course'}</button>
+      <button onClick={onCancel}>Cancel</button>
+    </div>
   );
 };
 
